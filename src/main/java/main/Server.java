@@ -2,6 +2,10 @@ package main;
 
 import data.Account;
 import data.Product;
+import gui.ServerWindow;
+import gui.ServerWindowController;
+import javafx.application.Application;
+import javafx.collections.ObservableList;
 
 import javax.swing.*;
 import java.rmi.*;
@@ -12,13 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server extends UnicastRemoteObject implements InterfaceServer {
-    JLabel label = new JLabel();
     private int port;
     private Registry registry;
-    private ArrayList<Account> arrayListAccounts;
-    private ArrayList<Product> arrayListProduct;
+    private ObservableList<Account> observableListAccounts;
+    private ObservableList<Product> observableListProducts;
+    private ServerWindow serverwindow;
+    private ServerWindowController serverWindowController;
 
-    public Server() throws RemoteException {
+    public Server(ServerWindowController serverWindowController) throws RemoteException {
         super();
         System.setProperty("java.security.policy", "file:./jav.policy");
         if (System.getSecurityManager() == null) {
@@ -29,19 +34,22 @@ public class Server extends UnicastRemoteObject implements InterfaceServer {
             setRegistry(LocateRegistry.createRegistry(getPort()));
             getRegistry().rebind("Server", this);
 
-            System.out.println("MyInterfaceImpl ok");
+            serverWindowController.getLabelServerStatus().setText("Serwer gotowy!");
         } catch (Exception e) {
+            serverWindowController.getLabelServerStatus().setText("Serwer nie działa!");
             e.printStackTrace();
         }
 
-        // TE LISTY BĘDZIE TRZEBA POBIERAC Z BAZY
-        arrayListAccounts = new ArrayList<Account>();
-        arrayListProduct = new ArrayList<Product>();
+        this.serverWindowController = serverWindowController;
+
+        // DO TYCH LIST TRZEBA ŁADOWAC Z BAZY
+        observableListAccounts = serverWindowController.getObservableListAccounts();
+        observableListProducts = serverWindowController.getObservableListProducts();
     }
 
     public boolean addAccount(Account account) throws RemoteException {
         try {
-            arrayListAccounts.add(account);
+            observableListAccounts.add(account);
             return true;
         } catch (Exception e) {
             return false;
@@ -50,7 +58,7 @@ public class Server extends UnicastRemoteObject implements InterfaceServer {
 
     public boolean addProduct(Product product) throws RemoteException {
         try {
-            arrayListProduct.add(product);
+            observableListProducts.add(product);
             return true;
         } catch (Exception e) {
             return false;
@@ -58,18 +66,18 @@ public class Server extends UnicastRemoteObject implements InterfaceServer {
     }
 
     public boolean orderProduct(int productID) throws RemoteException {
-        for (Product p : arrayListProduct)
+        for (Product p : observableListProducts)
             if (p.getId() == productID)
                 return p.decreaseQuantity();
         return false;
     }
 
     public List<Account> getListAccounts() throws RemoteException {
-        return arrayListAccounts;
+        return observableListAccounts;
     }
 
     public List<Product> getListProducts() throws RemoteException {
-        return arrayListProduct;
+        return observableListProducts;
     }
 
     public int metoda(int arg) {
@@ -77,11 +85,6 @@ public class Server extends UnicastRemoteObject implements InterfaceServer {
     }
 
     public static void main(String[] args) {
-        try {
-            Server server = new Server();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     public int getPort() {
@@ -100,19 +103,19 @@ public class Server extends UnicastRemoteObject implements InterfaceServer {
         this.registry = registry;
     }
 
-    public ArrayList<Account> getArrayListAccounts() {
-        return arrayListAccounts;
+    public ObservableList<Account> getObservableListAccounts() {
+        return observableListAccounts;
     }
 
-    public void setArrayListAccounts(ArrayList<Account> arrayListAccounts) {
-        this.arrayListAccounts = arrayListAccounts;
+    public void setObservableListAccounts(ObservableList<Account> observableListAccounts) {
+        this.observableListAccounts = observableListAccounts;
     }
 
-    public ArrayList<Product> getArrayListProduct() {
-        return arrayListProduct;
+    public ObservableList<Product> getObservableListProduct() {
+        return observableListProducts;
     }
 
-    public void setArrayListProduct(ArrayList<Product> arrayListProduct) {
-        this.arrayListProduct = arrayListProduct;
+    public void setObservableListProduct(ObservableList<Product> observableListProduct) {
+        this.observableListProducts = observableListProduct;
     }
 }

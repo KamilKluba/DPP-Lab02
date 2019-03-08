@@ -1,17 +1,48 @@
 package main;
 
-import java.rmi.*;
+import data.Account;
+import javafx.collections.ObservableList;
 
-public class MyClient {
- /*   public static void main(String args[]) {
+import java.io.Serializable;
+import java.rmi.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+
+public class MyClient extends UnicastRemoteObject implements InterfaceClient, Serializable {
+    Registry reg;
+    InterfaceServer remote_server;
+
+    public MyClient() throws RemoteException{
+        System.setProperty("java.security.policy", "file:./jav.policy");
+
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new RMISecurityManager());
         }
+
         try {
-            String name = "///MyInterface";
-            MyInterface clnt = (MyInterface) Naming.lookup(name);
-            int i = clnt.metoda(12);
-            System.out.println(i);
-        } catch (Exception e) {e.printStackTrace();}
-    }*/
+            reg = LocateRegistry.getRegistry();
+            remote_server = (InterfaceServer) reg.lookup("Server");
+
+            //ObservableList<Account> list = remote_server.getListAccounts();
+            //System.out.println(remote_server.test());
+            remote_server.addAccount(new Account(2, "kek", "kek2", 2));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String args[]) {
+        try {
+            new MyClient();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void metoda() throws RemoteException {
+
+    }
 }

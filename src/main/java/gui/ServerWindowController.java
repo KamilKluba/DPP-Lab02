@@ -11,7 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import main.Server;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +45,8 @@ public class ServerWindowController {
     private ListProperty<Product> listPropertyProducts;
     private ObservableList<Product> observableListProducts;
 
+    private Server server;
+
     public void initialize(){
         observableListAccounts = FXCollections.observableArrayList();
         listPropertyAccounts = new SimpleListProperty<Account>();
@@ -70,11 +74,21 @@ public class ServerWindowController {
     }
 
     public void actionDeleteAccount(){
-        observableListAccounts.remove(tableViewAccounts.getSelectionModel().getSelectedItem());
+        try {
+            Account account = tableViewAccounts.getSelectionModel().getSelectedItem();
+            server.removeAccount(account);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void actionDeleteProduct(){
-        observableListProducts.remove(tableViewProducts.getSelectionModel().getSelectedItem());
+        try {
+            Product product = tableViewProducts.getSelectionModel().getSelectedItem();
+            server.removeProduct(product);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public ObservableList<Account> getObservableListAccounts() {
@@ -99,5 +113,13 @@ public class ServerWindowController {
 
     public void setLabelServerStatus(Label labelServerStatus) {
         this.labelServerStatus = labelServerStatus;
+    }
+
+    public Server getServer() {
+        return server;
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
     }
 }

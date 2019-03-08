@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 
 import javax.swing.*;
+import java.io.Serializable;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -15,7 +16,7 @@ import java.rmi.server.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Server extends UnicastRemoteObject implements InterfaceServer {
+public class Server extends UnicastRemoteObject implements InterfaceServer, Serializable {
     private int port;
     private Registry registry;
     private ObservableList<Account> observableListAccounts;
@@ -41,6 +42,7 @@ public class Server extends UnicastRemoteObject implements InterfaceServer {
         }
 
         this.serverWindowController = serverWindowController;
+        serverWindowController.setServer(this);
 
         // DO TYCH LIST TRZEBA ŁADOWAC Z BAZY
         observableListAccounts = serverWindowController.getObservableListAccounts();
@@ -56,9 +58,27 @@ public class Server extends UnicastRemoteObject implements InterfaceServer {
         }
     }
 
+    public boolean removeAccount(Account account) throws RemoteException {
+        try {
+            observableListAccounts.remove(account);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public boolean addProduct(Product product) throws RemoteException {
         try {
             observableListProducts.add(product);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean removeProduct(Product product) throws RemoteException {
+        try {
+            observableListProducts.remove(product);
             return true;
         } catch (Exception e) {
             return false;
@@ -72,11 +92,15 @@ public class Server extends UnicastRemoteObject implements InterfaceServer {
         return false;
     }
 
-    public List<Account> getListAccounts() throws RemoteException {
+    public int test(){
+        return port;
+    }
+
+    public ObservableList<Account> getListAccounts() throws RemoteException {
         return observableListAccounts;
     }
 
-    public List<Product> getListProducts() throws RemoteException {
+    public ObservableList<Product> getListProducts() throws RemoteException {
         return observableListProducts;
     }
 

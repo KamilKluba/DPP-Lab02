@@ -39,6 +39,6 @@
             </ScrollPane>
          </children>
       </HBox>
-      <Label fx:id="labelServerStatus" layoutX="16.0" layoutY="369.0" text="Label" />
+      <Label fx:id="labelServerStatus" layoutX="16.0" layoutY="369.0" />
    </children>
 </Pane>

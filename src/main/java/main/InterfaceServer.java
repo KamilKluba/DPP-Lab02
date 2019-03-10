@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface InterfaceServer extends Remote {
-    boolean addAccount(Account account) throws RemoteException;
-    boolean removeAccount(Account account) throws RemoteException;
-    boolean addProduct(Product product) throws RemoteException;
-    boolean removeProduct(Product product) throws RemoteException;
+    boolean addAccount(Object account) throws RemoteException;
+    boolean removeAccount(Object account) throws RemoteException;
+    boolean addProduct(Object product) throws RemoteException;
+    boolean removeProduct(Object product) throws RemoteException;
     boolean orderProduct(int productID) throws RemoteException;
-    ObservableList<Account> getListAccounts() throws RemoteException;
-    ObservableList<Product> getListProducts() throws RemoteException;
+    ObservableList<Object> getListAccounts() throws RemoteException;
+    ObservableList<Object> getListProducts() throws RemoteException;
     int test() throws RemoteException;
 }

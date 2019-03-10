@@ -1,12 +1,21 @@
 package data;
 
-public class Product {
+import main.InterfaceServer;
+
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+
+public class Product implements InterfaceProduct {
     private int id;
     private String name;
     private String description;
     private int quantity;
     private int sellerID;
     private int cost;
+
+    Registry reg;
+    InterfaceServer remote_server;
 
     public Product(int id, String name, String description, int quantity, int sellerID, int cost) {
         this.id = id;
@@ -15,6 +24,18 @@ public class Product {
         this.quantity = quantity;
         this.sellerID = sellerID;
         this.cost = cost;
+
+        try {
+            reg = LocateRegistry.getRegistry();
+            remote_server = (InterfaceServer) reg.lookup("Server");
+
+            InterfaceProduct ip = (InterfaceProduct) UnicastRemoteObject.exportObject(this, 0);
+            remote_server.addProduct(ip);
+
+            System.out.println("Udało sie");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public int getId() {
@@ -71,5 +92,9 @@ public class Product {
 
     public void setCost(int cost) {
         this.cost = cost;
+    }
+
+    public static void main(String[] args){
+        new Product(1, "balon", "balon taki fajny", 10, 1, 1);
     }
 }

@@ -40,5 +40,6 @@
          </children>
       </HBox>
       <Label fx:id="labelServerStatus" layoutX="16.0" layoutY="369.0" />
+      <Button layoutX="286.0" layoutY="320.0" mnemonicParsing="false" onAction="#actionen" text="Button" />
    </children>
 </Pane>

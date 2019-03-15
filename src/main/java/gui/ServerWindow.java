@@ -16,7 +16,7 @@ public class ServerWindow extends Application {
 
     public void start(Stage primaryStage) throws Exception {
         System.setProperty("java.security.policy", "file:./jav.policy");
-        //System.setProperty("java.rmi.server.hostname","192.168.1.6");
+        System.setProperty("java.rmi.server.hostname","192.168.1.6");
 
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/ServerWindow.fxml"));
         Pane pane = loader.load();
